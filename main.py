@@ -31,6 +31,7 @@ class Player(GameSprite):
 
 rocket1 = Player("платформа2.jpg", 5, 20, 50, 20, 150)
 rocket2 = Player("платформа3.jpg", 5, 660, 50, 20, 150)
+ball = GameSprite('kovobanga.png', 10, 250, 250, 100, 50)
 
 
 
@@ -42,13 +43,41 @@ FPS = 40
 game = True
 finish = False
 
+font.init()
+font1 = font.Font(None, 45)
+lose1 = font1.render('PLAYER 1 LOSE!', True, (0, 0, 0))
+lose2 = font1.render('PLAYER 2 LOSE!', True, (0, 0, 0))
+
+speed_x = 3
+speed_y = 3
+
 while game:
     if finish != True:
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+
+        if sprite.collide_rect(rocket1, ball) or sprite.collide_rect(rocket2, ball):
+            speed_x *= -1
+
+        if ball.rect.y > 500 - 50 or ball.rect.y < 0:
+            speed_y *= -1
         window.blit(background, (0, 0))
+        if ball.rect.x > 650:
+            finish = True
+            window.blit(lose1, (200, 200))
+
+
+        if ball.rect.x < 0:
+            finish = True
+            window.blit(lose2, (200, 200))
+
+
+
         rocket1.reset()
         rocket1.update_l()
         rocket2.reset()
         rocket2.update_r()
+        ball.reset()
 
     for e in event.get():
         if e.type == QUIT:
